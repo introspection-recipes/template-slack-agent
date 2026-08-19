@@ -1,0 +1,35 @@
+# Runtime manifest. The filename stem is the runtime slug and is claimed once per
+# project, so rename this file and `name` together when you adapt the template.
+#
+# Commented keys below are the supported options. CUSTOMIZE.md covers the
+# repository grant; resources is ordinary runtime sizing.
+
+name: slack-agent
+path: .
+description: A Slack agent that answers requests in the thread they came from
+
+runtime:
+  # managed uses the Introspection model gateway. byok routes to your own
+  # provider account through a binding.
+  llm_mode: managed
+
+  # Repositories this runtime's tasks may check out into /workspace/repos.
+  # Uncomment only if the agent genuinely works on code. Each slug must already
+  # be registered to the project. Reads are implicit; declare write elevations.
+  # github:
+  #   repositories:
+  #     - your-org/your-repo
+  #   permissions:
+  #     contents: write
+  #     pull_requests: write
+
+  # Sandbox sizing. Leave it out until a real workload shows the defaults are
+  # wrong; the platform resolves these against the environment's own limits.
+  # resources:
+  #   requests:
+  #     cpu: "1"
+  #     memory: 2Gi
+  #     storage: 10Gi
+  #   limits:
+  #     cpu: "2"
+  #     memory: 4Gi

@@ -1,0 +1,49 @@
+{
+  "name": "@introspection-recipes/slack-agent",
+  "version": "0.1.0",
+  "description": "A Slack agent that answers requests in the thread they came from.",
+  "keywords": [
+    "pi-package",
+    "managed-agent",
+    "recipe",
+    "slack",
+    "chat-agent",
+    "connector"
+  ],
+  "type": "module",
+  "private": true,
+  "license": "Apache-2.0",
+  "scripts": {
+    "prepare": "git config core.hooksPath .githooks || true"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-agent-core": "*",
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "pi": {
+    "agents": [
+      "./agents/*.yaml"
+    ],
+    "mcp": {
+      "servers": [
+        {
+          "id": "slack",
+          "required": false,
+          "tools": {
+            "include": [
+              "send_message",
+              "react",
+              "read_thread",
+              "read_history",
+              "list_channels",
+              "join_channel",
+              "resolve_user",
+              "get_permalink"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

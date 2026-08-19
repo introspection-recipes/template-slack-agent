@@ -1,0 +1,69 @@
+# The only agent in this recipe. Shared behavior lives in ../SYSTEM.md; this file
+# selects the model and decides which actions the role can take.
+#
+# Commented lines below are the supported options, not dead code. Uncomment what
+# the job needs and delete the rest. CUSTOMIZE.md covers the Slack tools and
+# connector servers; the other fields are ordinary recipe configuration.
+
+name: agent
+description: Answers requests that arrive from Slack and replies in the thread they came from.
+
+ai:
+  model: anthropic/claude-sonnet-4-6
+  # thinking_level: minimal | low | medium | high | xhigh. Raise it for work
+  # that needs planning or judgment; lower it for short lookups and routing.
+  thinking_level: medium
+
+# Built-in tools. Nothing outside this list reaches the model.
+tools:
+  - read
+  - bash
+  - write
+  # - edit          # precise edits to existing files; pair with read
+  # - update_plan   # a visible plan for multi-step work
+
+# Skills are procedures the agent loads when relevant, one directory per skill
+# under skills/ with a SKILL.md inside. Selected by skill name, never by path.
+skills: []
+# skills:
+#   - triage-request
+
+# Other agents in this recipe that this one may delegate to. Each is its own
+# YAML file under agents/. Keep the set small; one agent is the right default.
+subagents: []
+# subagents:
+#   - researcher
+
+mcp:
+  # mode: tools registers each authorized tool with its real schema, which suits
+  # a handful of tools. mode: cli gives the agent one `mcp` command instead and
+  # costs a single tool definition, which suits a large server; it needs `bash`.
+  mode: tools
+  servers:
+    slack:
+      # The package grant in package.json permits the whole Slack vocabulary.
+      # This list is what this role actually receives. Start narrow.
+      include:
+        - send_message   # the only way to reach the person; defaults to the origin thread
+        - react          # acknowledge without posting
+        - read_thread    # read the rest of the thread you were addressed in
+        # - read_history   # recent messages of a channel the bot has joined
+        # - list_channels  # discover channels, including whether the bot is a member
+        # - join_channel   # join a public channel so its history becomes readable
+        # - resolve_user   # user id to profile fields, for rendering mentions
+        # - get_permalink  # link to a specific message
+    # Any other connector-backed server has to be declared in two places
+    # before it works: pi.mcp.servers in package.json, and here. What makes it
+    # reachable is a connection someone authorized on the platform, which the
+    # recipe never names. Tool names are exact, so discover the real ones
+    # rather than guessing them.
+    # See CUSTOMIZE.md.
+    # notion:
+    #   include:
+    #     - <exact tool name>
+
+system_instructions:
+  mode: append
+  content: |
+    You are the only agent in this recipe. Own the request from the Slack thread
+    through to the reply you post there.
