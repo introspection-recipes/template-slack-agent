@@ -12,3 +12,6 @@
 .slack/
 .env
 secret-file
+
+# Dependencies
+node_modules/
